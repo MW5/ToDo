@@ -16,15 +16,37 @@ public class DbAdapter {
     private static final String DB_NAME = "database.db";
     private static final String DB_TODO_TABLE = "todo";
 
+    //id
     public static final String KEY_ID = "_id";
     public static final String ID_OPTIONS = "INTEGER PRIMARY KEY AUTOINCREMENT";
     public static final int ID_COLUMN = 0;
+
+    //description
     public static final String KEY_DESCRIPTION = "description";
     public static final String DESCRIPTION_OPTIONS = "TEXT NOT NULL";
     public static final int DESCRIPTION_COLUMN = 1;
+
+    //completed
     public static final String KEY_COMPLETED = "completed";
     public static final String COMPLETED_OPTIONS = "INTEGER DEFAULT 0";
     public static final int COMPLETED_COLUMN = 2;
+
+    //created at
+    public static final String KEY_CREATED_AT = "created_at";
+    public static final String CREATED_AT_OPTIONS = "DATETIME DEFAULT CURRENT_TIMESTAMP";
+    public static final int CREATED_AT_COLUMN = 3;
+
+    //due
+    public static final String KEY_DUE = "due";
+    public static final String DUE_OPTIONS = "DATETIME NOT NULL";
+    public static final int DUE_COLUMN = 4;
+
+    //priority
+    public static final String KEY_PRIORITY = "priority";
+    public static final String PRIORITY_OPTIONS = "INTEGER NOT NULL";
+    public static final int PRIORITY_COLUMN = 5;
+
+
 
     private static final String DB_CREATE_TODO_TABLE =
             "CREATE TABLE " + DB_TODO_TABLE + "( " +

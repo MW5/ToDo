@@ -3,6 +3,7 @@ package com.example.mw5.todolist;
 import java.util.List;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,13 +45,6 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
     static class ViewHolder {
         public TextView ToDoText;
         public int id;
-
-        private void setId(int id) {
-            this.id = id;
-        }
-        private int getId() {
-            return id;
-        }
     }
     //test end
 
@@ -69,43 +63,46 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
             viewHolder = (ViewHolder) rowView.getTag();
         }
 
-        TodoTask task = tasks.get(position);
-        viewHolder.ToDoText.setText(task.getDescription()+task.getId());
-        viewHolder.setId((int) task.getId());
-
-
-        if(task.isCompleted()) {
-            viewHolder.ToDoText
-                    .setPaintFlags(viewHolder.ToDoText.getPaintFlags() |
-                            Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            viewHolder.ToDoText
-                    .setPaintFlags(viewHolder.ToDoText.getPaintFlags() &
-                            ~Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-
-
-
         Button setDoneBtn = (Button) rowView.findViewById(R.id.set_done_btn);
         Button deleteBtn = (Button) rowView.findViewById(R.id.delete_btn);
 
+        TodoTask task = tasks.get(position);
+        viewHolder.ToDoText.setText(task.getDescription()+task.getId());
+        viewHolder.id = (int) task.getId();
+
+        //completed task coloring
+        if(task.isCompleted()) {
+            rowView.setBackgroundColor(Color.GREEN);
+            setDoneBtn.setVisibility(View.GONE);
+        }
+
+        //delete btn handler
         deleteBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
-                dBAdapter.deleteTodo(viewHolder.getId());
-                //tasks.remove(position); //or some other task
+                if (dBAdapter.deleteTodo(viewHolder.id)) {
+                    tasks.remove(position);
+                } else {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
                 notifyDataSetChanged();
             }
         });
+
+        //done btn handler
         setDoneBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
-                tasks.get(position).setCompleted(true);
+                if (dBAdapter.updateTodo(viewHolder.id, tasks.get(position).getDescription(), true)) {
+                    tasks.get(position).setCompleted(true);
+                } else {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
                 notifyDataSetChanged();
             }
         });
+
+        //task click
 
         return rowView;
     }
