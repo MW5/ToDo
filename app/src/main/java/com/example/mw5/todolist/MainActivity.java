@@ -3,14 +3,12 @@ package com.example.mw5.todolist;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,10 +19,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton fab;
     ListView taskList;
-    ArrayAdapter<String> aa;
-    ArrayList<String> arrayList;
 
-    private DbAdapter DbAdapter;
+    private DbAdapter dBAdapter;
     private Cursor todoCursor;
     private List<TodoTask> tasks;
     private TodoTasksAdapter listAdapter;
@@ -37,32 +33,19 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //fab
+        //floating action bar
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //test add
-                DbAdapter.insertTodo("bagno2");
+                //maka data form here
+                dBAdapter.insertTodo("bagno2");
                 updateListViewData();
             }
         });
 
-        //test list
+        //task list
         taskList = (ListView) findViewById(R.id.taskList);
-
-        arrayList = new ArrayList<String>();
-        arrayList.add("test");
-        arrayList.add("test2");
-
-
-
-        //taskList.setAdapter(aa);
-        //CustomAdapter adapter = new CustomAdapter(arrayList, this);
-
-        //handle listview and assign adapter
-        //taskList.setAdapter(adapter);
-
         initListView();
 
     }
@@ -104,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fillListViewData() {
-        DbAdapter = new DbAdapter(getApplicationContext());
-        DbAdapter.open();
+        dBAdapter = new DbAdapter(getApplicationContext());
+        dBAdapter.open();
         getAllTasks();
-        listAdapter = new TodoTasksAdapter(this, tasks);
+        listAdapter = new TodoTasksAdapter(this, tasks, dBAdapter);
         taskList.setAdapter(listAdapter);
     }
 
@@ -118,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Cursor getAllEntriesFromDb() {
-        todoCursor = DbAdapter.getAllTodos();
+        todoCursor = dBAdapter.getAllTodos();
         if(todoCursor != null) {
             startManagingCursor(todoCursor);
             todoCursor.moveToFirst();
@@ -129,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateTaskList() {
         if(todoCursor != null && todoCursor.moveToFirst()) {
             do {
-                long id = todoCursor.getLong(DbAdapter.ID_COLUMN);
-                String description = todoCursor.getString(DbAdapter.DESCRIPTION_COLUMN);
-                boolean completed = todoCursor.getInt(DbAdapter.COMPLETED_COLUMN) > 0 ? true : false;
+                long id = todoCursor.getLong(dBAdapter.ID_COLUMN);
+                String description = todoCursor.getString(dBAdapter.DESCRIPTION_COLUMN);
+                boolean completed = todoCursor.getInt(dBAdapter.COMPLETED_COLUMN) > 0 ? true : false;
                 tasks.add(new TodoTask(id, description, completed));
             } while(todoCursor.moveToNext());
         }
@@ -139,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if(DbAdapter != null)
-            DbAdapter.close();
+        if(dBAdapter != null)
+            dBAdapter.close();
         super.onDestroy();
     }
 }
