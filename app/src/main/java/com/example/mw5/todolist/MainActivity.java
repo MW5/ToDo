@@ -9,25 +9,40 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    FloatingActionButton fab;
+    FloatingActionButton fabAddTask;
     ListView taskList;
+    LinearLayout addTaskForm;
+
+    //add form
+    EditText addDescriptionEt;
+    CalendarView addCalendar;
+    RadioGroup addRadioGroup;
+    Button confirmAddBtn;
+    Button rejectAddBtn;
 
     private DbAdapter dBAdapter;
     private Cursor todoCursor;
     private List<TodoTask> tasks;
     private TodoTasksAdapter listAdapter;
+
+    long due;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +52,72 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //add task form
+        addTaskForm = (LinearLayout) findViewById(R.id.addTaskForm);
+
+        //add task form content
+        addDescriptionEt = (EditText) findViewById(R.id.addDescriptionEt);
+        addCalendar = (CalendarView) findViewById(R.id.addCalendar);
+        addRadioGroup = (RadioGroup) findViewById(R.id.addRadioGroup);
+        confirmAddBtn = (Button) findViewById(R.id.confirmAddBtn);
+        rejectAddBtn = (Button) findViewById(R.id.rejectAddBtn);
+
         //floating action bar
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabAddTask = (FloatingActionButton) findViewById(R.id.fabAddTask);
+        fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //maka data form here
+                fabAddTask.setVisibility(View.INVISIBLE);
+                addTaskForm.setVisibility(View.VISIBLE);
+            }
+        });
 
-                //for testing purposes only sets due to current time
-                Long date = System.currentTimeMillis();
-                dBAdapter.insertTodo("bagno2",date, date, 0);
-                updateListViewData();
+        due = System.currentTimeMillis();
+        addCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month,
+                                            int dayOfMonth) {
+                Date dueDate = new Date(year-1900,month,dayOfMonth);
+                due = dueDate.getTime();
+            }
+        });
+
+        //confirm add form
+        confirmAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //description
+                String descriptionText = addDescriptionEt.getText().toString();
+                //created at
+                Long currDate = System.currentTimeMillis();
+                //priority
+                int radioButtonID = addRadioGroup.getCheckedRadioButtonId();
+                View radioButton = addRadioGroup.findViewById(radioButtonID);
+                int selectedPriority = addRadioGroup.indexOfChild(radioButton);
+
+                //database insert
+                if (descriptionText.length()>0 && descriptionText.length()<=20) {
+                    if (dBAdapter.insertTodo(descriptionText, currDate, due, selectedPriority) > 0) {
+                        updateListViewData();
+                        addTaskForm.setVisibility(View.INVISIBLE);
+                        fabAddTask.setVisibility(View.VISIBLE);
+                        addDescriptionEt.setText("");
+                        ((RadioButton) addRadioGroup.getChildAt(1)).setChecked(true);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Nazwa zadania musi mieć od 1-20 znaków",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        rejectAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTaskForm.setVisibility(View.INVISIBLE);
+                fabAddTask.setVisibility(View.VISIBLE);
             }
         });
 
