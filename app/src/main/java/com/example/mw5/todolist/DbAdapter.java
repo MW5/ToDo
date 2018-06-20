@@ -9,10 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.sql.Date;
+
 public class DbAdapter {
     private static final String DEBUG_TAG = "SqLiteTodoManager";
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "database.db";
     private static final String DB_TODO_TABLE = "todo";
 
@@ -33,12 +35,12 @@ public class DbAdapter {
 
     //created at
     public static final String KEY_CREATED_AT = "created_at";
-    public static final String CREATED_AT_OPTIONS = "DATETIME DEFAULT CURRENT_TIMESTAMP";
+    public static final String CREATED_AT_OPTIONS = "LONG NOT NULL";
     public static final int CREATED_AT_COLUMN = 3;
 
     //due
     public static final String KEY_DUE = "due";
-    public static final String DUE_OPTIONS = "DATETIME NOT NULL";
+    public static final String DUE_OPTIONS = "LONG NOT NULL";
     public static final int DUE_COLUMN = 4;
 
     //priority
@@ -48,12 +50,23 @@ public class DbAdapter {
 
 
 
+//    private static final String DB_CREATE_TODO_TABLE =
+//            "CREATE TABLE " + DB_TODO_TABLE + "( " +
+//                    KEY_ID + " " + ID_OPTIONS + ", " +
+//                    KEY_DESCRIPTION + " " + DESCRIPTION_OPTIONS + ", " +
+//                    KEY_COMPLETED + " " + COMPLETED_OPTIONS +
+//                    ");";
+
     private static final String DB_CREATE_TODO_TABLE =
             "CREATE TABLE " + DB_TODO_TABLE + "( " +
                     KEY_ID + " " + ID_OPTIONS + ", " +
                     KEY_DESCRIPTION + " " + DESCRIPTION_OPTIONS + ", " +
-                    KEY_COMPLETED + " " + COMPLETED_OPTIONS +
+                    KEY_COMPLETED + " " + COMPLETED_OPTIONS + ", " +
+                    KEY_CREATED_AT + " " + CREATED_AT_OPTIONS + ", " +
+                    KEY_DUE + " " + DUE_OPTIONS + ", " +
+                    KEY_PRIORITY + " " + PRIORITY_OPTIONS +
                     ");";
+
     private static final String DROP_TODO_TABLE =
             "DROP TABLE IF EXISTS " + DB_TODO_TABLE;
 
@@ -105,9 +118,12 @@ public class DbAdapter {
         dbHelper.close();
     }
 
-    public long insertTodo(String description) {
+    public long insertTodo(String description,long createdAt, long due, int priority) {
         ContentValues newTodoValues = new ContentValues();
         newTodoValues.put(KEY_DESCRIPTION, description);
+        newTodoValues.put(KEY_CREATED_AT, createdAt);
+        newTodoValues.put(KEY_DUE, due);
+        newTodoValues.put(KEY_PRIORITY, priority);
         return db.insert(DB_TODO_TABLE, null, newTodoValues);
     }
 
@@ -115,15 +131,19 @@ public class DbAdapter {
         long id = task.getId();
         String description = task.getDescription();
         boolean completed = task.isCompleted();
-        return updateTodo(id, description, completed);
+        long due = task.getDue();
+        int priority = task.getPriority();
+        return updateTodo(id, description, completed, due, priority);
     }
 
-    public boolean updateTodo(long id, String description, boolean completed) {
+    public boolean updateTodo(long id, String description, boolean completed, Long due, int priority) {
         String where = KEY_ID + "=" + id;
         int completedTask = completed ? 1 : 0;
         ContentValues updateTodoValues = new ContentValues();
         updateTodoValues.put(KEY_DESCRIPTION, description);
         updateTodoValues.put(KEY_COMPLETED, completedTask);
+        updateTodoValues.put(KEY_DUE, due);
+        updateTodoValues.put(KEY_PRIORITY, description);
         return db.update(DB_TODO_TABLE, updateTodoValues, where, null) > 0;
     }
 
@@ -133,19 +153,22 @@ public class DbAdapter {
     }
 
     public Cursor getAllTodos() {
-        String[] columns = {KEY_ID, KEY_DESCRIPTION, KEY_COMPLETED};
+        String[] columns = {KEY_ID, KEY_DESCRIPTION, KEY_COMPLETED, KEY_CREATED_AT, KEY_DUE, KEY_PRIORITY};
         return db.query(DB_TODO_TABLE, columns, null, null, null, null, null);
     }
 
     public TodoTask getTodo(long id) {
-        String[] columns = {KEY_ID, KEY_DESCRIPTION, KEY_COMPLETED};
+        String[] columns = {KEY_ID, KEY_DESCRIPTION, KEY_COMPLETED, KEY_CREATED_AT, KEY_DUE, KEY_PRIORITY};
         String where = KEY_ID + "=" + id;
         Cursor cursor = db.query(DB_TODO_TABLE, columns, where, null, null, null, null);
         TodoTask task = null;
         if(cursor != null && cursor.moveToFirst()) {
             String description = cursor.getString(DESCRIPTION_COLUMN);
             boolean completed = cursor.getInt(COMPLETED_COLUMN) > 0 ? true : false;
-            task = new TodoTask(id, description, completed);
+            long createdAt = cursor.getLong(CREATED_AT_COLUMN);
+            long due = cursor.getLong(DUE_COLUMN);
+            int priority = cursor.getInt(PRIORITY_COLUMN);
+            task = new TodoTask(id, description, completed, createdAt, due, priority);
         }
         return task;
     }

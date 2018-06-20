@@ -12,7 +12,11 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //maka data form here
-                dBAdapter.insertTodo("bagno2");
+
+                //for testing purposes only sets due to current time
+                Long date = System.currentTimeMillis();
+                dBAdapter.insertTodo("bagno2",date, date, 0);
                 updateListViewData();
             }
         });
@@ -115,7 +122,10 @@ public class MainActivity extends AppCompatActivity {
                 long id = todoCursor.getLong(dBAdapter.ID_COLUMN);
                 String description = todoCursor.getString(dBAdapter.DESCRIPTION_COLUMN);
                 boolean completed = todoCursor.getInt(dBAdapter.COMPLETED_COLUMN) > 0 ? true : false;
-                tasks.add(new TodoTask(id, description, completed));
+                long createdAt = todoCursor.getLong(dBAdapter.CREATED_AT_COLUMN);
+                long due = todoCursor.getLong(dBAdapter.DUE_COLUMN);
+                int priority = todoCursor.getInt(dBAdapter.PRIORITY_COLUMN);
+                tasks.add(new TodoTask(id, description, completed, createdAt, due, priority));
             } while(todoCursor.moveToNext());
         }
     }

@@ -1,10 +1,10 @@
 package com.example.mw5.todolist;
 
+import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +43,8 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
     }
 
     static class ViewHolder {
-        public TextView ToDoText;
+        public TextView toDoText;
+        public TextView toDoText2;
         public int id;
     }
     //test end
@@ -57,7 +58,8 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
             LayoutInflater layoutInflater = context.getLayoutInflater();
             rowView = layoutInflater.inflate(R.layout.task_list_row, null, true);
             viewHolder = new ViewHolder();
-            viewHolder.ToDoText = (TextView) rowView.findViewById(R.id.list_item_string);
+            viewHolder.toDoText = (TextView) rowView.findViewById(R.id.list_item_string);
+            viewHolder.toDoText2 = (TextView) rowView.findViewById(R.id.list_item_string_2);
             rowView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) rowView.getTag();
@@ -67,13 +69,48 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         Button deleteBtn = (Button) rowView.findViewById(R.id.delete_btn);
 
         TodoTask task = tasks.get(position);
-        viewHolder.ToDoText.setText(task.getDescription()+task.getId());
+        viewHolder.toDoText.setText(task.getDescription()+task.getId());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(task.getDue());
+        int mYear = calendar.get(Calendar.YEAR);
+        int mMonth = calendar.get(Calendar.MONTH);
+        int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int mMinute = calendar.get(Calendar.MINUTE);
+
+        String month = String.valueOf(mMonth);
+        String day = String.valueOf(mDay);
+        String hour = String.valueOf(mHour);
+        String minute = String.valueOf(mMinute);
+
+        if (mMonth<10) {
+            month = "0"+month;
+        }
+        if (mDay<10) {
+            day = "0"+day;
+        }
+        if (mHour<10) {
+            hour = "0"+hour;
+        }
+        if (mMinute<10) {
+            minute = "0"+minute;
+        }
+
+
+        viewHolder.toDoText2.setText("Termin: "+hour+":"+minute+" "+mDay+"-"+mMonth+"-"+mYear);
+
         viewHolder.id = (int) task.getId();
+
+        //priority coloring?
 
         //completed task coloring
         if(task.isCompleted()) {
             rowView.setBackgroundColor(Color.GREEN);
             setDoneBtn.setVisibility(View.GONE);
+        } else {
+            rowView.setBackgroundColor(Color.TRANSPARENT);
+            setDoneBtn.setVisibility(View.VISIBLE);
         }
 
         //delete btn handler
@@ -93,7 +130,8 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         setDoneBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if (dBAdapter.updateTodo(viewHolder.id, tasks.get(position).getDescription(), true)) {
+                if (dBAdapter.updateTodo(viewHolder.id, tasks.get(position).getDescription(), true,
+                        tasks.get(position).getDue(), tasks.get(position).getPriority())) {
                     tasks.get(position).setCompleted(true);
                 } else {
                     Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
