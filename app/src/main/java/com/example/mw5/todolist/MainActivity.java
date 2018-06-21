@@ -98,14 +98,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //confirm add form
+        //confirm add btn handler
         confirmAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //description
+                //prepare description
                 String descriptionText = addDescriptionEt.getText().toString();
-                //created at
+                //prepare created at
                 Long currDate = System.currentTimeMillis();
-                //priority
+                //prepare priority
                 int radioButtonID = addRadioGroup.getCheckedRadioButtonId();
                 View radioButton = addRadioGroup.findViewById(radioButtonID);
                 int selectedPriority = addRadioGroup.indexOfChild(radioButton);
@@ -119,14 +120,15 @@ public class MainActivity extends AppCompatActivity {
                         addDescriptionEt.setText("");
                         ((RadioButton) addRadioGroup.getChildAt(1)).setChecked(true);
                     } else {
-                        Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, R.string.sth_went_wrong, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Nazwa zadania musi mieć od 1-20 znaków",
+                    Toast.makeText(MainActivity.this, R.string.description_too_short,
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        //reject btn handler
         rejectAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

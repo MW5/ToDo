@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,6 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         this.tasks = tasks;
     }
 
-    //test
     @Override
     public int getCount() {
         return tasks.size();
@@ -57,6 +55,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         final ViewHolder viewHolder;
         View rowView = convertView;
 
+        //inflate rows
         if(rowView == null) {
             LayoutInflater layoutInflater = context.getLayoutInflater();
             rowView = layoutInflater.inflate(R.layout.task_list_row, null, true);
@@ -78,6 +77,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         //calendar one digit fixer
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(task.getDue());
+
         int mYear = calendar.get(Calendar.YEAR);
         int mMonth = calendar.get(Calendar.MONTH);
         int mDay = calendar.get(Calendar.DAY_OF_MONTH);
@@ -91,7 +91,6 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         if (mDay<10) {
             day = "0"+day;
         }
-
 
         //priority translator
         String priority = "";
@@ -159,7 +158,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
                 if (dBAdapter.deleteTodo(viewHolder.id)) {
                     tasks.remove(position);
                 } else {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.sth_went_wrong, Toast.LENGTH_SHORT).show();
                 }
                 notifyDataSetChanged();
             }
@@ -173,7 +172,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
                         tasks.get(position).getDue(), tasks.get(position).getPriority())) {
                     tasks.get(position).setCompleted(true);
                 } else {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.sth_went_wrong, Toast.LENGTH_SHORT).show();
                 }
                 notifyDataSetChanged();
             }
