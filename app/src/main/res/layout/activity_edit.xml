@@ -4,30 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
-    tools:layout_editor_absoluteY="81dp"
-    tools:showIn="@layout/activity_main">
-
-    <ListView
-        android:id="@+id/taskList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </ListView>
+    tools:context=".editActivity"
+    tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
-        android:id="@+id/addTaskForm"
-        android:layout_width="match_parent"
+        android:id="@+id/editTaskForm"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
         android:background="@android:color/background_light"
         android:orientation="vertical"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="69dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/createdAtText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Switch
+            android:id="@+id/doneSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Czy ukończone?" />
 
         <EditText
-            android:id="@+id/addDescriptionEt"
+            android:id="@+id/editDescriptionEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="Zadanie"
@@ -35,25 +40,32 @@
             android:inputType="textPersonName" />
 
         <CalendarView
-            android:id="@+id/addCalendar"
+            android:id="@+id/editCalendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <RadioGroup
-            android:id="@+id/addRadioGroup"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:text="Priorytet:" />
+
+        <RadioGroup
+            android:id="@+id/editRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/addHighPriority"
+                android:id="@+id/editHighPriority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Wysoki" />
 
             <RadioButton
-                android:id="@+id/addMediumPriority"
+                android:id="@+id/editMediumPriority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -61,7 +73,7 @@
                 android:text="Średni" />
 
             <RadioButton
-                android:id="@+id/addLowPriority"
+                android:id="@+id/editLowPriority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -75,14 +87,28 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/confirmAddBtn"
+                android:id="@+id/setToDoBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="114dp"
+                android:layout_marginStart="186dp"
+                android:layout_weight="1"
+                android:text="To do"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/confirmEditBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Dodaj" />
+                android:text="Zapisz"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="587dp" />
 
             <Button
-                android:id="@+id/rejectAddBtn"
+                android:id="@+id/rejectEditBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

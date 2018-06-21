@@ -1,5 +1,7 @@
 package com.example.mw5.todolist;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //set default due
         due = System.currentTimeMillis();
         addCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
 
@@ -124,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         //task list
         taskList = (ListView) findViewById(R.id.taskList);
         initListView();
-
     }
 
     //top right dropdown
@@ -206,4 +208,14 @@ public class MainActivity extends AppCompatActivity {
             dBAdapter.close();
         super.onDestroy();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                updateListViewData();
+            }
+        }
+    }
+
 }

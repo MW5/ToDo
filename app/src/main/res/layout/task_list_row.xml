@@ -1,118 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:clickable="false"
+    android:focusable="false">
 
     <Button
-        android:id="@+id/set_done_btn"
+        android:id="@+id/setDoneBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@id/delete_btn"
-        android:text="Done" />
+        android:layout_toStartOf="@+id/deleteBtn"
+        android:text="Zrobione" />
 
     <TextView
-        android:id="@+id/list_item_string_2"
+        android:id="@+id/listItemDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/delete_btn"
+        android:layout_below="@+id/deleteBtn"
         android:layout_marginTop="12dp"
-        android:paddingLeft="8dp"
-        android:textSize="18sp" />
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <Button
-        android:id="@+id/delete_btn"
+        android:id="@+id/deleteBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:text="Delete" />
+        android:text="Usuń" />
 
     <TextView
-        android:id="@+id/list_item_string"
+        android:id="@+id/listItemDue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:paddingLeft="8dp"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:id="@+id/editTaskForm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <EditText
-            android:id="@+id/editDescriptionEt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="Zadanie"
-            android:ems="10"
-            android:inputType="textPersonName" />
-
-        <CalendarView
-            android:id="@+id/editCalendar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <RadioGroup
-            android:id="@+id/editRadioGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/editHighPriority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Wysoki" />
-
-            <RadioButton
-                android:id="@+id/editMediumPriority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Średni" />
-
-            <RadioButton
-                android:id="@+id/editLowPriority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Niski" />
-
-        </RadioGroup>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/confirmEditBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Dodaj" />
-
-            <Button
-                android:id="@+id/rejectEditBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Anuluj" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+        android:textSize="14sp" />
 
 </RelativeLayout>
