@@ -143,7 +143,7 @@ public class DbAdapter {
         updateTodoValues.put(KEY_DESCRIPTION, description);
         updateTodoValues.put(KEY_COMPLETED, completedTask);
         updateTodoValues.put(KEY_DUE, due);
-        updateTodoValues.put(KEY_PRIORITY, description);
+        updateTodoValues.put(KEY_PRIORITY, priority);
         return db.update(DB_TODO_TABLE, updateTodoValues, where, null) > 0;
     }
 

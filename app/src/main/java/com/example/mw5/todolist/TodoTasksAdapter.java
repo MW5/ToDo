@@ -6,6 +6,8 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
     static class ViewHolder {
         public TextView listItemDescription;
         public TextView listItemDue;
+        public TextView listItemPriority;
         public int id;
     }
     //test end
@@ -62,6 +65,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
             viewHolder = new ViewHolder();
             viewHolder.listItemDescription = (TextView) rowView.findViewById(R.id.listItemDescription);
             viewHolder.listItemDue = (TextView) rowView.findViewById(R.id.listItemDue);
+            viewHolder.listItemPriority = (TextView) rowView.findViewById(R.id.listItemPriority);
             rowView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) rowView.getTag();
@@ -89,18 +93,54 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
             day = "0"+day;
         }
 
+
+        //priority tranlator
+        String priority = "";
+        switch (task.getPriority()) {
+            case 0: priority = "Priorytet: wysoki";
+                break;
+            case 1: priority = "Priorytet: średni";
+                break;
+            case 2: priority = "Priorytet: niski";
+                break;
+        }
         viewHolder.listItemDue.setText("Termin: "+day+"-"+month+"-"+mYear);
+        viewHolder.listItemPriority.setText(priority);
 
         viewHolder.id = (int) task.getId();
 
-        //priority coloring?
+        //colors for priority bg`s
+        GradientDrawable highPriorityBg = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[] {0x44FF3300,0xFFFFFFFF});
+        highPriorityBg.setCornerRadius(0f);
+
+        GradientDrawable mediumPriorityBg = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[] {0x88FFFF99,0xFFFFFFFF});
+        highPriorityBg.setCornerRadius(0f);
+
+        GradientDrawable lowPriorityBg = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[] {0x336699FF,0xFFFFFFFF});
+        highPriorityBg.setCornerRadius(0f);
 
         //completed task coloring
         if(task.isCompleted()) {
             rowView.setBackgroundColor(Color.GREEN);
             setDoneBtn.setVisibility(View.GONE);
         } else {
-            rowView.setBackgroundColor(Color.TRANSPARENT);
+            switch (task.getPriority()) {
+                case 0:
+                    rowView.setBackground(highPriorityBg);
+                    break;
+                case 1:
+                    rowView.setBackground(mediumPriorityBg);
+                    break;
+                case 2:
+                    rowView.setBackground(lowPriorityBg);
+                    break;
+            }
             setDoneBtn.setVisibility(View.VISIBLE);
         }
 

@@ -1,46 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:clickable="false"
-    android:focusable="false">
+    android:focusable="false"
+    tools:layout_editor_absoluteY="81dp">
+
 
     <Button
         android:id="@+id/setDoneBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/deleteBtn"
-        android:text="Zrobione" />
+        android:layout_marginBottom="8dp"
+        android:paddingBottom="8dp"
+        android:text="Zrobione"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteBtn"
+        app:layout_constraintTop_toBottomOf="@+id/listItemDescription" />
 
     <TextView
         android:id="@+id/listItemDescription"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/deleteBtn"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="2dp"
         android:paddingBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingTop="8dp"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/deleteBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:text="Usuń" />
+        android:layout_marginBottom="8dp"
+        android:paddingBottom="8dp"
+        android:text="Usuń"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listItemDescription" />
+
+    <TextView
+        android:id="@+id/listItemPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="dupoa"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/listItemDescription"
+        app:layout_constraintTop_toBottomOf="@+id/listItemDescription" />
 
     <TextView
         android:id="@+id/listItemDue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:paddingBottom="8dp"
         android:paddingLeft="8dp"
-        android:textSize="14sp" />
+        android:text="dupa"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
