@@ -1,17 +1,21 @@
 package com.example.mw5.todolist;
 
-import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -19,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.Date;
@@ -51,15 +54,21 @@ public class MainActivity extends AppCompatActivity {
     private boolean sortByPriorityAsc;
     private boolean sortByDueAsc;
 
+    private boolean pastDueNotificationSent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //set sort flags
         sortByCreatedAtAsc = false;
         sortByDescriptionAsc = false;
         sortByPriorityAsc = false;
         sortByDueAsc = false;
+
+        //set past due notification flag
+        pastDueNotificationSent = false;
 
         //toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -85,10 +94,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Toast.makeText(this, "yolo", Toast.LENGTH_SHORT).show();
+
         //set default due
         due = System.currentTimeMillis();
+        //calendar handler
         addCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
@@ -246,10 +257,30 @@ public class MainActivity extends AppCompatActivity {
                 boolean completed = todoCursor.getInt(dBAdapter.COMPLETED_COLUMN) > 0 ? true : false;
                 long createdAt = todoCursor.getLong(dBAdapter.CREATED_AT_COLUMN);
                 long due = todoCursor.getLong(dBAdapter.DUE_COLUMN);
+                if (due < System.currentTimeMillis() && !completed && !pastDueNotificationSent) {
+                    sendPastDueNotification();
+                    pastDueNotificationSent = true;
+                }
                 int priority = todoCursor.getInt(dBAdapter.PRIORITY_COLUMN);
                 tasks.add(new TodoTask(id, description, completed, createdAt, due, priority));
             } while(todoCursor.moveToNext());
         }
+    }
+
+    public void sendPastDueNotification() {
+        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+        Resources r = getResources();
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setContentTitle(r.getString(R.string.past_due_notification_title))
+                .setContentText(r.getString(R.string.past_due_notification_text))
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
     }
 
     @Override
@@ -259,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    //update list view on EditActivity triggered by ToDoTaskAdapter row click handler intent
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -267,5 +299,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

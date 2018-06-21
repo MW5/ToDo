@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">ToDoList</string>
+    <string name="app_name">Lista zadań</string>
     <string name="action_settings">Settings</string>
     <string name="sth_went_wrong">Coś poszło nie tak :(</string>
     <string name="description_too_short">Nazwa zadania musi mieć od 1-20 znaków</string>
+    <string name="past_due_notification_title">Lista zadań</string>
+    <string name="past_due_notification_text">Niektóre z Twoich zadań wymagają uwagi.</string>
 </resources>

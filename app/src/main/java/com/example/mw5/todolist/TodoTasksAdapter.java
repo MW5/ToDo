@@ -4,9 +4,14 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
     private Activity context;
@@ -68,11 +75,12 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
             viewHolder = (ViewHolder) rowView.getTag();
         }
 
+        //row buttons
         Button setDoneBtn = (Button) rowView.findViewById(R.id.setDoneBtn);
         Button deleteBtn = (Button) rowView.findViewById(R.id.deleteBtn);
 
+        //get task
         task = tasks.get(position);
-        viewHolder.listItemDescription.setText(task.getDescription());
 
         //calendar one digit fixer
         Calendar calendar = Calendar.getInstance();
@@ -102,6 +110,9 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
             case 2: priority = "Priorytet: niski";
                 break;
         }
+
+        //set text values
+        viewHolder.listItemDescription.setText(task.getDescription());
         viewHolder.listItemDue.setText("Termin: "+day+"-"+month+"-"+mYear);
         viewHolder.listItemPriority.setText(priority);
 
