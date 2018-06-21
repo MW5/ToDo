@@ -46,10 +46,21 @@ public class MainActivity extends AppCompatActivity {
 
     long due;
 
+    private boolean sortByCreatedAtAsc;
+    private boolean sortByDescriptionAsc;
+    private boolean sortByPriorityAsc;
+    private boolean sortByDueAsc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sortByCreatedAtAsc = false;
+        sortByDescriptionAsc = false;
+        sortByPriorityAsc = false;
+        sortByDueAsc = false;
+
         //toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,27 +143,57 @@ public class MainActivity extends AppCompatActivity {
     //top right dropdown
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Toast.makeText(this, "dupa", Toast.LENGTH_SHORT).show();
+        if (id == R.id.sortByCreatedAt) {
+            if (!sortByCreatedAtAsc) {
+                updateListViewDataBy("created_at", "ASC");
+                sortByCreatedAtAsc = true;
+            } else {
+                updateListViewDataBy("created_at", "DESC");
+                sortByCreatedAtAsc = false;
+            }
+            return true;
+        }
+        if (id == R.id.sortByDescription) {
+            if (!sortByDescriptionAsc) {
+                updateListViewDataBy("description", "ASC");
+                sortByDescriptionAsc = true;
+            } else {
+                updateListViewDataBy("description", "DESC");
+                sortByDescriptionAsc = false;
+            }
+            return true;
+        }
+        if (id == R.id.sortByPriority) {
+            if (!sortByPriorityAsc) {
+                updateListViewDataBy("priority", "ASC");
+                sortByPriorityAsc = true;
+            } else {
+                updateListViewDataBy("priority", "DESC");
+                sortByPriorityAsc = false;
+            }
+            return true;
+        }
+        if (id == R.id.sortByDue) {
+            if (!sortByDueAsc) {
+                updateListViewDataBy("due", "ASC");
+                sortByDueAsc = true;
+            } else {
+                updateListViewDataBy("due", "DESC");
+                sortByDueAsc = false;
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-    //top right dropdown end
 
     private void initListView() {
         fillListViewData();
@@ -160,6 +201,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateListViewData() {
         todoCursor.requery();
+        tasks.clear();
+        updateTaskList();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    private void updateListViewDataBy(String criteria, String order) {
+        todoCursor = dBAdapter.getAllTodosByOrder(criteria, order);
         tasks.clear();
         updateTaskList();
         listAdapter.notifyDataSetChanged();

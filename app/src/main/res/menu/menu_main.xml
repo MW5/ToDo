@@ -3,8 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.mw5.todolist.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/sortByCreatedAt"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Sortuj po dacie utworzenia"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sortByDescription"
+        android:orderInCategory="100"
+        android:title="Sortuj po nazwie"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sortByPriority"
+        android:orderInCategory="100"
+        android:title="Sortuj po priorytecie"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sortByDue"
+        android:orderInCategory="100"
+        android:title="Sortuj po terminie wykonania"
         app:showAsAction="never" />
 </menu>

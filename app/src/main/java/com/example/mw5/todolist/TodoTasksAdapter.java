@@ -43,7 +43,6 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
     @Override
     public long getItemId(int pos) {
         return tasks.get(pos).getId();
-        //just return 0 if your list items do not have an Id variable.
     }
 
     static class ViewHolder {
@@ -52,7 +51,6 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         public TextView listItemPriority;
         public int id;
     }
-    //test end
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -77,6 +75,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         task = tasks.get(position);
         viewHolder.listItemDescription.setText(task.getDescription());
 
+        //calendar one digit fixer
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(task.getDue());
         int mYear = calendar.get(Calendar.YEAR);
@@ -94,7 +93,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         }
 
 
-        //priority tranlator
+        //priority translator
         String priority = "";
         switch (task.getPriority()) {
             case 0: priority = "Priorytet: wysoki";
@@ -107,9 +106,17 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         viewHolder.listItemDue.setText("Termin: "+day+"-"+month+"-"+mYear);
         viewHolder.listItemPriority.setText(priority);
 
+        //id synchronization
         viewHolder.id = (int) task.getId();
 
-        //colors for priority bg`s
+        //past due tasks coloring
+        if (task.getDue()<System.currentTimeMillis()) {
+            viewHolder.listItemDue.setTextColor(Color.RED);
+        } else {
+            viewHolder.listItemDue.setTextColor(Color.BLACK);
+        }
+
+        //priority bg coloring
         GradientDrawable highPriorityBg = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 new int[] {0x44FF3300,0xFFFFFFFF});
@@ -129,6 +136,7 @@ public class TodoTasksAdapter extends ArrayAdapter<TodoTask> {
         if(task.isCompleted()) {
             rowView.setBackgroundColor(Color.GREEN);
             setDoneBtn.setVisibility(View.GONE);
+            viewHolder.listItemDue.setTextColor(Color.BLACK);
         } else {
             switch (task.getPriority()) {
                 case 0:

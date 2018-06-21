@@ -48,15 +48,6 @@ public class DbAdapter {
     public static final String PRIORITY_OPTIONS = "INTEGER NOT NULL";
     public static final int PRIORITY_COLUMN = 5;
 
-
-
-//    private static final String DB_CREATE_TODO_TABLE =
-//            "CREATE TABLE " + DB_TODO_TABLE + "( " +
-//                    KEY_ID + " " + ID_OPTIONS + ", " +
-//                    KEY_DESCRIPTION + " " + DESCRIPTION_OPTIONS + ", " +
-//                    KEY_COMPLETED + " " + COMPLETED_OPTIONS +
-//                    ");";
-
     private static final String DB_CREATE_TODO_TABLE =
             "CREATE TABLE " + DB_TODO_TABLE + "( " +
                     KEY_ID + " " + ID_OPTIONS + ", " +
@@ -155,6 +146,11 @@ public class DbAdapter {
     public Cursor getAllTodos() {
         String[] columns = {KEY_ID, KEY_DESCRIPTION, KEY_COMPLETED, KEY_CREATED_AT, KEY_DUE, KEY_PRIORITY};
         return db.query(DB_TODO_TABLE, columns, null, null, null, null, null);
+    }
+
+    public Cursor getAllTodosByOrder(String criteria, String order) {
+        String[] columns = {KEY_ID, KEY_DESCRIPTION, KEY_COMPLETED, KEY_CREATED_AT, KEY_DUE, KEY_PRIORITY};
+        return db.query(DB_TODO_TABLE, columns, null, null, null, null, criteria+" "+order);
     }
 
     public TodoTask getTodo(long id) {
