@@ -1,6 +1,5 @@
 package com.example.mw5.todolist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

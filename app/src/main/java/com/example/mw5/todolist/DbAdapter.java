@@ -6,10 +6,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
-
-import java.sql.Date;
 
 public class DbAdapter {
     private static final String DEBUG_TAG = "SqLiteTodoManager";
@@ -74,19 +70,11 @@ public class DbAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(DB_CREATE_TODO_TABLE);
-
-            Log.d(DEBUG_TAG, "Database creating...");
-            Log.d(DEBUG_TAG, "Table " + DB_TODO_TABLE + " ver." + DB_VERSION + " created");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL(DROP_TODO_TABLE);
-
-            Log.d(DEBUG_TAG, "Database updating...");
-            Log.d(DEBUG_TAG, "Table " + DB_TODO_TABLE + " updated from ver." + oldVersion + " to ver." + newVersion);
-            Log.d(DEBUG_TAG, "All data is lost.");
-
             onCreate(db);
         }
     }

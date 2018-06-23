@@ -4,9 +4,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -26,7 +29,10 @@ import android.widget.Toast;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private List<TodoTask> tasks;
     private TodoTasksAdapter listAdapter;
 
+    private Calendar newDayCalendar;
+    private Timer notificationTimer;
     long due;
 
     private boolean sortByCreatedAtAsc;
@@ -92,6 +100,18 @@ public class MainActivity extends AppCompatActivity {
                 addTaskForm.setVisibility(View.VISIBLE);
             }
         });
+
+        //checks for a new day every minute
+        final Handler checkNewDayHandler = new Handler();
+        checkNewDayHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (checkForNewDay()) {
+                    updateTaskList();
+                };
+                checkNewDayHandler.postDelayed(this, 60000);
+            }
+        }, 10000);
 
         //set default due
         due = System.currentTimeMillis();
@@ -261,6 +281,29 @@ public class MainActivity extends AppCompatActivity {
                 int priority = todoCursor.getInt(dBAdapter.PRIORITY_COLUMN);
                 tasks.add(new TodoTask(id, description, completed, createdAt, due, priority));
             } while(todoCursor.moveToNext());
+        }
+    }
+
+    //check if new day
+    private boolean checkForNewDay() {
+        newDayCalendar = Calendar.getInstance();
+        int thisDay = newDayCalendar.get(Calendar.DAY_OF_YEAR);
+        long todayMillis = newDayCalendar.getTimeInMillis();
+
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        long last = prefs.getLong("date", System.currentTimeMillis());
+
+        newDayCalendar.setTimeInMillis(last);
+
+        int lastDay = newDayCalendar.get(Calendar.DAY_OF_YEAR);
+        if (lastDay == thisDay) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putLong("date", todayMillis + 86400000);
+            edit.commit();
+            return true;
+        } else {
+            return false;
         }
     }
 
