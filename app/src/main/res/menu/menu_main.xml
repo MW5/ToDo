@@ -22,4 +22,9 @@
         android:orderInCategory="100"
         android:title="Sortuj po terminie wykonania"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/saveToFile"
+        android:orderInCategory="100"
+        android:title="Zapisz do pliku"
+        app:showAsAction="never" />
 </menu>

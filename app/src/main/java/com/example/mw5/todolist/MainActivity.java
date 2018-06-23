@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -27,12 +28,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -53,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private TodoTasksAdapter listAdapter;
 
     private Calendar newDayCalendar;
-    private Timer notificationTimer;
     long due;
 
     private boolean sortByCreatedAtAsc;
@@ -221,6 +223,9 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
+        if (id == R.id.saveToFile) {
+            saveToFile();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -281,6 +286,29 @@ public class MainActivity extends AppCompatActivity {
                 int priority = todoCursor.getInt(dBAdapter.PRIORITY_COLUMN);
                 tasks.add(new TodoTask(id, description, completed, createdAt, due, priority));
             } while(todoCursor.moveToNext());
+        }
+    }
+
+    //save to file
+    private void saveToFile() {
+        File filesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File todoFile = new File(filesDir, "lista.txt");
+        String dataToSave = "";
+        if(todoCursor != null && todoCursor.moveToFirst()) {
+            do {
+                String id = String.valueOf(todoCursor.getLong(dBAdapter.ID_COLUMN));
+                String description = todoCursor.getString(dBAdapter.DESCRIPTION_COLUMN);
+                String completed = String.valueOf(todoCursor.getInt(dBAdapter.COMPLETED_COLUMN) > 0 ? true : false);
+                String createdAt = String.valueOf(todoCursor.getLong(dBAdapter.CREATED_AT_COLUMN));
+                String due = String.valueOf(todoCursor.getLong(dBAdapter.DUE_COLUMN));
+                String priority = String.valueOf(todoCursor.getInt(dBAdapter.PRIORITY_COLUMN));
+                dataToSave = dataToSave+"\n"+id+" "+description+" "+completed+" "+createdAt+" "+due+" "+priority;
+            } while(todoCursor.moveToNext());
+        }
+        try {
+            FileUtils.writeStringToFile(todoFile, dataToSave);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
